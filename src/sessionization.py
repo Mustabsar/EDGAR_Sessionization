@@ -26,8 +26,8 @@ output_text = sys.argv[3]
 
 #read the log.csv file and store it in a Dask dataframe
 sessiondata = dd.read_csv(logfile, 
-                          usecols=['ip','date','time','cik','accession','extention'],   
-                          dtype={'ip':str,'cik':str,'accession':str,'extension':str},
+                          usecols=['ip','date','time'], # can also include ['cik','accession','extention'] if we want, but these are not needed. The reasoning is explained ,   
+                          dtype={'ip':str}, # include these if needed ['cik':str,'accession':str,'extension':str},
                           na_filter=False, #assuming no missing data to make parsing faster
                           parse_dates = {'timestamp' : ['date','time']}, #Combining the 'date' and 'time' column to a 'timestamp' column
                           infer_datetime_format=True,
@@ -41,7 +41,7 @@ requests, we don't need to actually keep track of these columns for the purpose 
 So we can just drop these columns altogether.  In fact, there was no need to read these into the
 dataframe at all. We only included them since the problem statement says to pay attention to these fields.
 """
-sessiondata = sessiondata.drop(['cik','accession','extention'],axis=1)
+# sessiondata = sessiondata.drop(['cik','accession','extention'],axis=1)
 
 #Make an 'entry_order' column. This is required since we need to output the sorted data in a particular order that depends on the entry order in the input
 sessiondata['entry_order']=sessiondata.index
@@ -55,12 +55,12 @@ The essential algorithm is as follows: We identify when an user has been idle fo
 by checking the difference between consequtive requests. Each time this condition is met, a new session is started.
 The 'session_id' column keeps track of the current session.
 """
-sessiondata=sessiondata.groupby('ip').apply(lambda df: df.assign(idle_time=df.timestamp.diff(1))).reset_index(drop=True)
+sessiondata=sessiondata.groupby('ip').apply(lambda df: df.assign(idle_time=df.timestamp.diff(1))).reset_index(drop=True) #Calculating the difference between consequtive timestamps
 
 sessiondata['start_new_session']=sessiondata['idle_time'].apply(lambda x: int(x/np.timedelta64(1,'s')> inactivity_period), meta = ('start_new_session', 'int'))
 sessiondata['session_id'] = sessiondata.groupby('ip')['start_new_session'].cumsum() + 1
 
-#We do not need the intermediate columns any more. So we can optionally drop them.
+#We do not need the intermediate columns any more. So we can optionally drop them to make our memory usage lighter.
 sessiondata=sessiondata.drop(['start_new_session', 'idle_time'], axis=1)
 
 """
@@ -68,7 +68,7 @@ Once the sessions have been identified, it is easy to figure out the start and e
 of each session. Also we can count the total number of requests in each session.
 """
 
-#Define a function that is applied to GroupBy objects
+#Define a function that is applied to GroupBy objects, obtained by grouping sessiondata according to 'ip' and 'session_id'
 def assign_start_end_count(df):
     
     df['total_no_of_request'] = df['timestamp'].count() #per session
@@ -77,7 +77,7 @@ def assign_start_end_count(df):
     
     df['actual_end_session'] = df['timestamp'].max()
     
-    #ANother column to keep track of those session that were forcefully ended when EOF was reached
+    #Another column to keep track of those session that were forcefully ended when EOF was reached
     actual_end_timestamp = df['timestamp'].max()
     if actual_end_timestamp < (max_timestamp.compute()-np.timedelta64(inactivity_period,'s')):
         df['EOF_end_session'] = actual_end_timestamp
