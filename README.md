@@ -113,4 +113,4 @@ ip,date,time,zone,cik,accession,extention,code,size,idx,norefer,noagent,find,cra
  
  + I would like to thank Insight Data Engineering team for the challenge. It was a pleasure to research and think about best ways of implementing the required program correctly and efficiently.
  
- + If you have any question or comment regarding the code, or find a mistake somewhere, feel free to reach out to me  `@subhadipnet@gmail.com`.
+ + If you have any question or comment regarding the code, or find a mistake somewhere, feel free to reach out to me   at `subhadipnet@gmail.com`.
