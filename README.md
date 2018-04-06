@@ -1,6 +1,6 @@
 # EDGAR Sessionization
 
-The Electronic Data Gathering, Analysis and Retrieval (EDGAR) system by the SEC maintains (publicly available) weblogs that is a collection of entries corresponding to document access from different IP addresses at different timestamps. This project is about [sessionizing](https://www.wikiwand.com/en/Session_(web_analytics)) that data to get a summary of individual session durations, idle period, and number of documents requested per session.
+The Electronic Data Gathering, Analysis and Retrieval (EDGAR) system by the SEC maintains (publicly available) weblogs that collect entries corresponding to document access from different IP addresses at different timestamps. This project is about [sessionizing](https://www.wikiwand.com/en/Session_(web_analytics)) that data to get a summary of individual session durations, idle periods, number of documents requested per session etc.
 
 This was posed as a coding challenge from Insight Data Engineering Team.
 
@@ -112,5 +112,7 @@ ip,date,time,zone,cik,accession,extention,code,size,idx,norefer,noagent,find,cra
  ## Final Comments
  
  + I would like to thank Insight Data Engineering team for the challenge. It was a pleasure to research and think about best ways of implementing the required program correctly and efficiently.
+ 
+ + The code can be modified easily to include a list of document ids that were requested. 
  
  + If you have any question or comment regarding the code, or find a mistake somewhere, feel free to reach out to me   at `subhadipnet@gmail.com`.
