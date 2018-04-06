@@ -39,7 +39,7 @@ sessiondata = dd.read_csv(logfile,
 Since the same document accessed more than once at the same time timestamp counts as multiple 
 requests, we don't need to actually keep track of these columns for the purpose of current problem.
 So we can just drop these columns altogether.  In fact, there was no need to read these into the
-dataframe at all. We only included them since the problem statement says to pay attention to these fields.
+dataframe at all. We mention them since the problem statement says to pay attention to these fields.
 """
 # sessiondata = sessiondata.drop(['cik','accession','extention'],axis=1)
 
